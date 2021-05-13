@@ -1,0 +1,122 @@
+<div class="col-md-12 mt-3">
+  <div class="col-md-12">
+    <form class="example-form">
+      <table cellspacing="0">
+        <tr>
+          <td>
+            <mat-form-field class="mr-5">
+              <mat-label>Pincode</mat-label>
+              <input matInput #postalCode maxlength="6" name="pincode" placeholder="382421"
+                [(ngModel)]="sessionInput.pincode" required>
+              <mat-hint align="end">{{postalCode.value.length}} / 6</mat-hint>
+            </mat-form-field>
+          </td>
+          <td>
+            <mat-form-field class="mr-5">
+              <mat-label>Interval</mat-label>
+              <mat-select name="interval" [(ngModel)]="sessionInput.interval">
+                <mat-option [value]="180">3 minutes</mat-option>
+                <mat-option [value]="300">5 minutes</mat-option>
+                <mat-option [value]="420">7 minutes</mat-option>
+                <mat-option [value]="600">10 minutes</mat-option>
+                <mat-option [value]="900">15 minutes</mat-option>
+                <mat-option [value]="1200">20 minutes</mat-option>
+                <mat-option [value]="1800">30 minutes</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </td>
+          <td>
+            <mat-form-field class="mr-5">
+              <mat-label>Min Age</mat-label>
+              <mat-select name="age" [(ngModel)]="sessionInput.age" (ngModelChange)="trigger()">
+                <mat-option [value]="0">All Age Group</mat-option>
+                <mat-option [value]="18">18+</mat-option>
+                <mat-option [value]="45">45+</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </td>
+          <td>
+            <mat-form-field class="mr-5">
+              <mat-label>Vacccine</mat-label>
+              <mat-select name="vacccine" [(ngModel)]="sessionInput.vacccine" (ngModelChange)="trigger()">
+                <mat-option [value]="undefined">All Vacccine</mat-option>
+                <mat-option [value]="'COVISHIELD'">Covishield</mat-option>
+                <mat-option [value]="'COVAXIN'">Covaxin</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </td>
+          <td>
+            <mat-form-field class="mr-5">
+              <mat-label>Fee Type</mat-label>
+              <mat-select name="fee_type" [(ngModel)]="sessionInput.fee_type" (ngModelChange)="trigger()">
+                <mat-option [value]="undefined">All Fee Type</mat-option>
+                <mat-option [value]="'Free'">Free</mat-option>
+                <mat-option [value]="'Paid'">Paid</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </td>
+        </tr>
+      </table>
+    </form>
+
+    <table>
+      <tr>
+        <td>
+          <button mat-raised-button color="primary" class="mt-4 mr-3" [disabled]="isStart || !sessionInput.pincode"
+            (click)="start()">START</button>
+          <button mat-raised-button color="warn" class="mt-4 mr-3" [disabled]="!isStart" (click)="stop()">STOP</button>
+          <button mat-raised-button color="{{!isAlarmPaused ? 'warn' : 'primary'}}" class="mt-4 mr-3"
+            (click)="setAlarmAction()">{{!isAlarmPaused ? 'PAUSE' : 'PLAY'}} ALARM</button>
+          <mat-icon aria-hidden="false" class="material-icons mt-4 mr-2" aria-label="Example home icon">schedule
+          </mat-icon>
+          <mat-label class="mt-4 mr-3">{{time | minuteSeconds}}</mat-label>
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="col-md-12 mt-5">
+    <table class="table">
+      <tr>
+        <td>
+          <mat-label class="title">Available Center ({{sessionResult?.sessions.length}})</mat-label>
+        </td>
+      </tr>
+      <tr>
+        <td *ngIf="!isShowSlot">
+          <mat-label>No Slot Available</mat-label>
+        </td>
+      </tr>
+      <tr>
+        <table *ngIf="isShowSlot">
+          <tr>
+            <th scope="col" width="1%">Sr.</th>
+            <th scope="col" width="30%">Center</th>
+            <th scope="col" width="10%">Fee Type</th>
+            <th scope="col" width="10%">Available Slot</th>
+            <th scope="col" width="10%">Date</th>
+            <th scope="col" width="10%">Min Age</th>
+            <th scope="col" width="10%">Vaccine</th>
+            <th scope="col" width="20%">Slot</th>
+          </tr>
+          <tr *ngFor="let item of sessionResult.sessions; let i = index" scope="row" [class.matched]="item.is_matched">
+            <td>{{ i+1 }}</td>
+            <td><b>{{item.name}}</b> <br /> {{item.address}}, {{item.district_name}}, {{item.state_name}},
+              {{item.pincode}}
+            </td>
+            <td>{{item.fee_type}}</td>
+            <td>{{item.available_capacity}}</td>
+            <td>{{item.date}}</td>
+            <td>{{item.min_age_limit}}</td>
+            <td>{{item.vaccine}}</td>
+            <td>{{item.slots}}</td>
+          </tr>
+        </table>
+      </tr>
+    </table>
+  </div>
+</div>
+
+<audio #audioOption>
+  <source src='./../assets/tone.mp3' type="audio/mp3">
+</audio>
